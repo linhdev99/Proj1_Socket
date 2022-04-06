@@ -1,5 +1,10 @@
+using System;
 using System.Collections;
+using System.Windows;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -21,9 +26,15 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
     string dataTest;
+    public IPAddress serverIp;
+    public int serverPort;
+    IPEndPoint serverEndpoint;
+    int size; // kích thước của bộ đệm
+    List<byte> receiveBuffer; // mảng byte làm bộ đệm            
+    Socket socket;
     void Start()
     {
-
+        ClientSocket();
     }
 
     void Update()
@@ -32,7 +43,17 @@ public class GameManager : MonoBehaviour
     }
     public string GetDataServer()
     {
-        string jsonData = dataTest;
+        string jsonData = "";
+        byte[] receiveBuffer = new byte[2048];
+        try
+        {
+            int size = socket.Receive(receiveBuffer);
+            jsonData = Encoding.ASCII.GetString(receiveBuffer, 0, size);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+        }
         return jsonData;
     }
     public void SetDataServer(Vector3 pos, Quaternion rot, Vector3 scale)
@@ -44,7 +65,28 @@ public class GameManager : MonoBehaviour
             scale = new List<float> { scale.x, scale.y, scale.z },
         };
         string jsonString = JsonConvert.SerializeObject(m_optTransform);
-        dataTest = jsonString;
-        // Debug.Log(jsonString);
+        byte[] sendBuffer = Encoding.ASCII.GetBytes(jsonString);
+        int size = sendBuffer.Length;
+        try
+        {
+            socket.Send(sendBuffer, 0, size, 0);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+        }
+        // socket.Close();
+    }
+
+    private void ClientSocket()
+    {
+        serverIp = IPAddress.Parse("127.0.0.1");
+        serverPort = 1108;
+        serverEndpoint = new IPEndPoint(serverIp, serverPort);
+        size = 4096;
+        receiveBuffer = new List<byte>();
+        socket = new Socket(SocketType.Dgram, ProtocolType.Udp);
+        socket.Connect(serverEndpoint);
+        Debug.Log(socket.Connected);
     }
 }

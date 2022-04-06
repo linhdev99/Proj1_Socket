@@ -1,5 +1,5 @@
 # Proj1_Socket
-# Mở file GameManager
+# GameManager.cs
 + GetDataServer
 + + get --> jsonData
 + SetDataServer(Vector3 pos, Quaternion rot, Vector3 scale)

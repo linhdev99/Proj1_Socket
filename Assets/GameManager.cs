@@ -43,26 +43,27 @@ public class GameManager : MonoBehaviour
     }
     public string GetDataServer()
     {
-        string jsonData = "";
+        string jsonString = "";
         byte[] receiveBuffer = new byte[2048];
         try
         {
             int size = socket.Receive(receiveBuffer);
-            jsonData = Encoding.ASCII.GetString(receiveBuffer, 0, size);
+            jsonString = Encoding.ASCII.GetString(receiveBuffer, 0, size);
         }
         catch (System.Exception e)
         {
             Debug.Log(e);
         }
-        return jsonData;
+        // return jsonString;
+        return dataTest;
     }
     public void SetDataServer(Vector3 pos, Quaternion rot, Vector3 scale)
     {
         OptTransform m_optTransform = new OptTransform
         {
-            position = new List<float> { pos.x, pos.y, pos.z },
-            rotation = new List<float> { rot.x, rot.y, rot.z, rot.w },
-            scale = new List<float> { scale.x, scale.y, scale.z },
+            position = new List<float> { Mathf.Round(pos.x * 10000) / 10000, Mathf.Round(pos.y * 10000) / 10000, Mathf.Round(pos.z * 10000) / 10000 },
+            rotation = new List<float> { Mathf.Round(rot.x * 10000) / 10000, Mathf.Round(rot.y * 10000) / 10000, Mathf.Round(rot.z * 10000) / 10000, Mathf.Round(rot.w * 10000) / 10000 },
+            scale = new List<float> { Mathf.Round(scale.x * 10000) / 10000, Mathf.Round(scale.y * 10000) / 10000, Mathf.Round(scale.z * 10000) / 10000 },
         };
         string jsonString = JsonConvert.SerializeObject(m_optTransform);
         byte[] sendBuffer = Encoding.ASCII.GetBytes(jsonString);
@@ -75,6 +76,8 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log(e);
         }
+        dataTest = jsonString;
+        // Debug.Log(dataTest);
         // socket.Close();
     }
 

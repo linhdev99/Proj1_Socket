@@ -28,7 +28,7 @@ public class BallClone : MonoBehaviour
             return;
         }
         // string test = @"{""position"":[5.917352,3.404661,-2.49365664],""rotation"":[0.0208070148,2.71946163E-07,-0.0040278337,0.9997754],""scale"":[5.0,5.0,5.0]}";
-        m_optTrans = JsonConvert.DeserializeObject<OptTransform>(jsonData);
+        m_optTrans = JsonConvert.DeserializeObject<OptTransform>(jsonData); // string (json) --> class
     }
     void SetTransformBall()
     {

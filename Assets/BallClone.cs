@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using UnityEngine;
 
 public class BallClone : MonoBehaviour
@@ -17,18 +16,21 @@ public class BallClone : MonoBehaviour
     void Update()
     {
         GetDataFromServer();
-        SetTransformBall();
     }
     void GetDataFromServer()
     {
-        string jsonData = "";
-        jsonData = GameManager.GM.GetDataServer();
-        if (jsonData == null || jsonData.Equals(""))
+        m_optTrans = GameManager.GM.GetDataServer();
+        if (m_optTrans != null)
         {
-            return;
+            SetTransformBall();
         }
-        // string test = @"{""position"":[5.917352,3.404661,-2.49365664],""rotation"":[0.0208070148,2.71946163E-07,-0.0040278337,0.9997754],""scale"":[5.0,5.0,5.0]}";
-        m_optTrans = JsonConvert.DeserializeObject<OptTransform>(jsonData); // string (json) --> class
+        // string jsonData = "";
+        // if (jsonData == null || jsonData.Equals(""))
+        // {
+        //     return;
+        // }
+        // // string test = @"{""position"":[5.917352,3.404661,-2.49365664],""rotation"":[0.0208070148,2.71946163E-07,-0.0040278337,0.9997754],""scale"":[5.0,5.0,5.0]}";
+        // m_optTrans = JsonConvert.DeserializeObject<OptTransform>(jsonData); // string (json) --> class
     }
     void SetTransformBall()
     {

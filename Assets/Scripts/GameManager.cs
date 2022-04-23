@@ -59,12 +59,12 @@ public class GameManager : MonoBehaviour
             // Debug.Log("Receive: " + recText);
 
             // string to JObject
-            Debug.Log(recText.Length);
+            // Debug.Log(recText.Length);
             JObject json = JObject.Parse(recText);
-            Debug.Log("1");
+            // Debug.Log("1");
             res = json.ToObject<OptTransform>();
-            print("2");
-            Debug.Log("asd" + res.position[0]);
+            // print("2");
+            // Debug.Log("asd" + res.position[0]);
 
         }
         catch (System.Exception e)
@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
         // string jsonString = JsonConvert.SerializeObject(m_optTransform); // class --> string (json)
         // string text = "{\"position\":[0,0,0],\"rotation\":[1,1,1],\"scale\":[2,2,2]}";
         string jsonString = JObject.FromObject(m_optTransform).ToString();
-        Debug.Log(jsonString);
+        // Debug.Log(jsonString);
         byte[] sendbuf = Encoding.ASCII.GetBytes(jsonString);
         try
         {

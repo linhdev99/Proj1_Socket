@@ -32,7 +32,7 @@ public class BallController : MonoBehaviour
         Vector3 temp_pos = transform.position;
         Quaternion temp_rot = transform.rotation;
         Vector3 temp_scale = transform.localScale;
-        GameManager.GM.SetDataServer(temp_pos, temp_rot, temp_scale);
+        GameManager.GM.SendDataToServer(temp_pos, temp_rot, temp_scale);
         //------------------- Position
         // string pos_x = temp_pos.x.ToString();
         // string pos_y = temp_pos.y.ToString();

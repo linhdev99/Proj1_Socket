@@ -23,6 +23,54 @@ public class StateHistory
         scale = trans.localScale;
     }
 }
+public class OtherClient
+{
+    public string clientID;
+    public bool state; // true: connect, false: disconnect
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector3 scale;
+    public List<float> lpos
+    {
+        set
+        {
+            if (value.Count < 3) return;
+            position = new Vector3(value[0] - 15, value[1], value[2]);
+        }
+    }
+    public List<float> lrot
+    {
+        set
+        {
+            if (value.Count < 4) return;
+            rotation = new Quaternion(value[0], value[1], value[2], value[3]);
+        }
+    }
+    public List<float> lscale
+    {
+        set
+        {
+            if (value.Count < 3) return;
+            scale = new Vector3(value[0], value[1], value[2]);
+        }
+    }
+    public OtherClient(string id, bool s, List<float> pos, List<float> rot, List<float> scal)
+    {
+        clientID = id;
+        state = s;
+        position = new Vector3(pos[0] - 15, pos[1], pos[2]);
+        rotation = new Quaternion(rot[0], rot[1], rot[2], rot[3]);
+        scale = new Vector3(scal[0], scal[1], scal[2]);
+    }
+    public OtherClient(string id, bool s, Vector3 pos, Quaternion rot, Vector3 scal)
+    {
+        clientID = id;
+        state = s;
+        position = pos;
+        rotation = rot;
+        scale = scal;
+    }
+}
 public class TransformGO
 {
     public string clientID;
@@ -39,14 +87,28 @@ public class TransformGO
         rotation = new List<float> { Mathf.Round(trans.rotation.x * 10000) / 10000, Mathf.Round(trans.rotation.y * 10000) / 10000, Mathf.Round(trans.rotation.z * 10000) / 10000, Mathf.Round(trans.rotation.w * 10000) / 10000 };
         scale = new List<float> { Mathf.Round(trans.localScale.x * 10000) / 10000, Mathf.Round(trans.localScale.y * 10000) / 10000, Mathf.Round(trans.localScale.z * 10000) / 10000 };
     }
+    public Vector3 GetPosition()
+    {
+        return new Vector3(position[0], position[1], position[2]);
+    }
+    public Vector3 GetScale()
+    {
+        return new Vector3(scale[0], scale[1], scale[2]);
+    }
+    public Quaternion GetRotation()
+    {
+        return new Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
+    }
 }
 
 [RequireComponent(typeof(NetworkClientDisplay))]
 public class NetworkClient : MonoBehaviour
 {
     // set it to your server address
-    [SerializeField] string serverIP = "127.0.0.1";
-    [SerializeField] int port = 8080;
+    // [SerializeField]
+    string serverIP = "127.0.0.1";
+    // [SerializeField]
+    int port = 8080;
 
     #region "Public Members"
     public string id;
@@ -55,11 +117,11 @@ public class NetworkClient : MonoBehaviour
     // public Vector3 desiredPosition;
     [HideInInspector]
     public Transform nextTransform;
-    public BallClone ballClone;
+    // public BallClone ballClone;
     #endregion
 
     #region "Private Members"
-    Dictionary<string, GameObject> otherClients;
+    Dictionary<string, OtherClient> otherClients;
     NetworkClientDisplay otherClientMover;
     Socket udp;
     IPEndPoint endPoint;
@@ -69,6 +131,8 @@ public class NetworkClient : MonoBehaviour
 
     void Awake()
     {
+        serverIP = PlayerPrefs.GetString("IP", "127.0.0.1");
+        port = PlayerPrefs.GetInt("Port", 1108);
         if (serverIP == "")
             Debug.LogError("Server IP Address not set");
         if (port == -1)
@@ -78,7 +142,7 @@ public class NetworkClient : MonoBehaviour
         // desiredPosition = transform.position;
         nextTransform = transform;
         otherClientMover = GetComponent<NetworkClientDisplay>();
-        otherClients = new Dictionary<string, GameObject>();
+        otherClients = new Dictionary<string, OtherClient>();
         history = new Dictionary<int, StateHistory>();
         endPoint = new IPEndPoint(IPAddress.Parse(serverIP), port);
         udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -139,7 +203,8 @@ public class NetworkClient : MonoBehaviour
 
             string data = Encoding.Default.GetString(buffer);
             receiveData = ConvertJsonStringToTransformGO(data);
-            ballClone.SetTransformBall(receiveData);
+            otherClientMover.SetData(receiveData);
+            // ballClone.SetTransformBall(receiveData);
             if (!receiveData.state)
             {
                 Debug.Log(receiveData.clientID);
@@ -151,12 +216,10 @@ public class NetworkClient : MonoBehaviour
         }
     }
 
-    void AddOtherClient(string parsedID, Vector3 pos)
+    void AddOtherClient(string parsedID, Transform trans)
     {
-        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        go.name = parsedID;
-        go.transform.position = pos;
-        otherClients.Add(parsedID, go);
+        // OtherClient other = new OtherClient(parsedID, true, trans.position, trans.rotation, trans.localScale);
+        // otherClients.Add(parsedID, other);
     }
     string ConvertTransformGOToJsonString(TransformGO transGO)
     {

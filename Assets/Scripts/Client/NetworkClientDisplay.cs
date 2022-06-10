@@ -2,55 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// class used for lerping clients' position
-public class UserInterpolation
-{
-    internal Vector3 start, dest;
-    internal float speed, progress;
-    internal bool isMoving;
-
-    internal UserInterpolation(Vector3 startV, Vector3 destination, float sp)
-    {
-        start = startV;
-        dest = destination;
-        speed = sp;
-        progress = 0f;
-        isMoving = true;
-    }
-}
-
 [RequireComponent(typeof(NetworkClient))]
 public class NetworkClientDisplay : MonoBehaviour
 {
-    [SerializeField] float speed = 8f;
-    
-    public Dictionary<GameObject, UserInterpolation> usersToInterpolate;
-    NetworkClient client; 
-
-    void Start()
+    public GameObject go_Ball;
+    public OtherClient client;
+    public GameObject ball_clone;
+    private void Start()
     {
-        client = GetComponent<NetworkClient>();
-        usersToInterpolate = new Dictionary<GameObject, UserInterpolation>();
+        client = new OtherClient("", false, Vector3.zero, Quaternion.identity, Vector3.zero);
+        ball_clone = Instantiate(go_Ball, go_Ball.transform.position, go_Ball.transform.rotation);
     }
-
     void Update()
     {
-        if(usersToInterpolate.Count > 0)
-        {
-            foreach(KeyValuePair<GameObject, UserInterpolation> user in usersToInterpolate)
-            {
-                if(user.Value.progress < 1f)
-                {
-                    user.Value.progress += Time.deltaTime * user.Value.speed;
-                    user.Key.transform.position = Vector3.Lerp(user.Value.start, user.Value.dest, user.Value.progress);
-                }
-                else    user.Value.isMoving = false;
-            }
-        }
+        // transform.position = client.position;
+        ball_clone.transform.position = client.position;
+        ball_clone.transform.rotation = client.rotation;
+        ball_clone.transform.localScale = client.scale;
+        // Debug.Log(client.scale);
     }
-
-    public void Move(GameObject go, Vector3 dest)
+    public void SetData(TransformGO trans)
     {
-        usersToInterpolate[go] = new UserInterpolation(go.transform.position, dest, speed);
+        client.clientID = trans.clientID;
+        client.state = trans.state;
+        client.lpos = trans.position;
+        client.lrot = trans.rotation;
+        client.lscale = trans.scale;
     }
 }

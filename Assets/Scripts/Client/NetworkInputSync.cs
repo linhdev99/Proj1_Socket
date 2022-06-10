@@ -57,6 +57,5 @@ public class NetworkInputSync : MonoBehaviour
             m_rigidbody.velocity += Vector3.up * 20f;
         }
         client.nextTransform = transform;
-        // clientMover.Move(gameObject, transform.position);
     }
 }

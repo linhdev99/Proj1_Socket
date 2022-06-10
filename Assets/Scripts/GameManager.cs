@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
         OptTransform res = null;
         try
         {
+            // toi uu code
             EndPoint dummyEndpoint = new IPEndPoint(IPAddress.Any, 0);
             int receiveBuf = socket.ReceiveFrom(receiveBuffer, ref dummyEndpoint);
             string recText = Encoding.ASCII.GetString(receiveBuffer, 0, receiveBuf);
@@ -94,8 +95,8 @@ public class GameManager : MonoBehaviour
     {
         try
         {
-            serverIp = IPAddress.Parse("127.0.0.1");
-            serverPort = 1108;
+            serverIp = IPAddress.Parse("35.87.152.15");
+            serverPort = 2222;
             size = 1024;
             serverEndpoint = new IPEndPoint(serverIp, serverPort);
             receiveBuffer = new byte[size];

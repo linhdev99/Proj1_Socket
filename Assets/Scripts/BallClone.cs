@@ -15,17 +15,17 @@ public class BallClone : MonoBehaviour
 
     void Update()
     {
-        GetDataFromServer();
+        // GetDataFromServer();
     }
     void GetDataFromServer()
     {
-        m_optTrans = GameManager.GM.ReceiveDataFormServer();
-        if (m_optTrans != null)
-        {
-            SetTransformBall();
-        }
+        // m_optTrans = GameManager.GM.ReceiveDataFormServer();
+        // if (m_optTrans != null)
+        // {
+        //     SetTransformBall(m_optTrans);
+        // }
     }
-    void SetTransformBall()
+    public void SetTransformBall(TransformGO m_optTrans)
     {
         if (m_optTrans == null) return;
         transform.position = new Vector3(m_optTrans.position[0] - 15, m_optTrans.position[1], m_optTrans.position[2]);

@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     {
         PlayerPrefs.SetString("IP", txt_ip.text);
         PlayerPrefs.SetInt("Port", Int32.Parse(txt_port.text));
+        NetworkManager.NWManager.NetworkConnect();
         SceneManager.LoadScene("Test1");
     }
 }

@@ -8,9 +8,6 @@ using UnityEngine;
 public class NetworkInputSync : MonoBehaviour
 {
     [Tooltip("The distance to be moved in each move input")]
-    // [SerializeField] float moveDistance = 1f;
-    // [SerializeField]
-    // string id;
     [SerializeField]
     float m_speed = 10f;
     float m_horizontal, m_vertical;
@@ -27,20 +24,16 @@ public class NetworkInputSync : MonoBehaviour
 
     void Update()
     {
-        if (client.id != "")
+        if (NetworkManager.NWManager.id != "")
         {
             GetMoveInput();
-            // if (m_horizontal == 0 && m_vertical == 0)
-            // {
-            //     return;
-            // }
             bool j = false;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 j = true;
             }
             Move(m_horizontal, m_vertical, j);
-            client.SendPacket(new TransformGO(transform, client.id));
+            client.SendPacket(new TransformGO(transform, NetworkManager.NWManager.id));
         }
     }
 

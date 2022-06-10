@@ -87,26 +87,26 @@ public class NetworkClient : MonoBehaviour
 
     void Update()
     {
-        if (udp.Available != 0)
-        {
-            byte[] buffer = new byte[1024];
-            // udp.Receive(buffer);
-            dummyEndpoint = NetworkManager.NWManager.Dummy_EndPoint();
-            int receiveBuf = udp.ReceiveFrom(buffer, ref dummyEndpoint);
+        // if (udp.Available != 0)
+        // {
+        //     byte[] buffer = new byte[1024];
+        //     // udp.Receive(buffer);
+        //     dummyEndpoint = NetworkManager.NWManager.Dummy_EndPoint();
+        //     int receiveBuf = udp.ReceiveFrom(buffer, ref dummyEndpoint);
 
-            string data = Encoding.Default.GetString(buffer);
-            receiveData = ConvertData.ConvertJsonStringToTransformGO(data);
-            // otherClientMover.SetData(receiveData);
-            // ballClone.SetTransformBall(receiveData);
-            if (!receiveData.state)
-            {
-                Debug.Log(receiveData.clientID);
-                return;
-            }
-            receiveData = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
+        //     string data = Encoding.Default.GetString(buffer);
+        //     receiveData = ConvertData.ConvertJsonStringToTransformGO(data);
+        //     // otherClientMover.SetData(receiveData);
+        //     // ballClone.SetTransformBall(receiveData);
+        //     if (!receiveData.state)
+        //     {
+        //         Debug.Log(receiveData.clientID);
+        //         return;
+        //     }
+        //     receiveData = null;
+        //     // GC.Collect();
+        //     // GC.WaitForPendingFinalizers();
+        // }
     }
 
     void AddOtherClient(string parsedID, Transform trans)

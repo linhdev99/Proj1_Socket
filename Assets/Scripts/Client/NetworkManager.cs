@@ -46,6 +46,7 @@ public class NetworkManager : MonoBehaviour
         if (port == -1)
             Debug.LogError("Port not set");
         endPoint = new IPEndPoint(IPAddress.Parse(serverIP), port);
+        dummyEndpoint = new IPEndPoint(IPAddress.Any, 0);
         udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         udp.Blocking = false;
         id = CreateID();
@@ -67,7 +68,7 @@ public class NetworkManager : MonoBehaviour
     }
     public EndPoint Dummy_EndPoint()
     {
-        return new IPEndPoint(IPAddress.Any, 0);
+        return dummyEndpoint;
     }
     public string CreateID()
     {

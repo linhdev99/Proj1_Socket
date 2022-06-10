@@ -27,13 +27,16 @@ public class NetworkInputSync : MonoBehaviour
         if (NetworkManager.NWManager.id != "")
         {
             GetMoveInput();
-            bool j = false;
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (m_horizontal != 0 || m_vertical != 0)
             {
-                j = true;
+                bool j = false;
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    j = true;
+                }
+                Move(m_horizontal, m_vertical, j);
+                client.SendPacket(new TransformGO(transform, NetworkManager.NWManager.id));
             }
-            Move(m_horizontal, m_vertical, j);
-            client.SendPacket(new TransformGO(transform, NetworkManager.NWManager.id));
         }
     }
 

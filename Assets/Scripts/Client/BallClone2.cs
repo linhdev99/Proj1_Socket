@@ -46,8 +46,8 @@ public class BallClone2 : MonoBehaviour
                 return;
             }
             receiveData = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            // GC.Collect();
+            // GC.WaitForPendingFinalizers();
         }
     }
 

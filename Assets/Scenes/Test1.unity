@@ -578,6 +578,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 
+  receiveData: 
+  sendData: 
 --- !u!4 &283980981
 Transform:
   m_ObjectHideFlags: 0
@@ -2570,7 +2572,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &566575094167183153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3001,8 +3003,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bb7c3adf40040445a9ba475116a2b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  packetNumber: 0
-  nextTransform: {fileID: 0}
 --- !u!114 &8687549938124056622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3010,13 +3010,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8687549938124056620}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c85d82edb023755419e28da689fcc668, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   go_Ball: {fileID: 7117316425654767137, guid: 01d6b19e3be5446478418e3cbf9cbb2a, type: 3}
-  ball_clone: {fileID: 0}
 --- !u!114 &8687549938124056623
 MonoBehaviour:
   m_ObjectHideFlags: 0

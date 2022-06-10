@@ -16,8 +16,8 @@ public class NetworkManager : MonoBehaviour
     #region "Public Members"
     public string id;
     public NetworkRoom networkRoom;
-    public TransformGO receiveData;
-    public TransformGO packetData;
+    public string receiveData;
+    public string sendData;
     #endregion
 
     #region "Private Members"
@@ -35,13 +35,11 @@ public class NetworkManager : MonoBehaviour
         else
             NWManager = this;
         DontDestroyOnLoad(this);
-        receiveData = null;
-        packetData = null;
+        receiveData = "";
+        sendData = "";
         ConvertData = new NetworkConvertData();
         NetworkConnect();
         networkRoom = new NetworkRoom();
-        // threadSendPacket = new Thread(SendPacket);
-        // threadSendPacket.Start();
         coroutineSendPacket = StartCoroutine(SendPacket());
         coroutineReceivePacket = StartCoroutine(ReceivePacket());
     }
@@ -106,28 +104,29 @@ public class NetworkManager : MonoBehaviour
         while (true)
         {
             yield return null;
-            if (packetData == null)
+            if (sendData.Equals(""))
             {
                 continue;
             }
             else
             {
-                byte[] arr = Encoding.ASCII.GetBytes(ConvertData.ConvertTransformGOToJsonString(packetData));
+                byte[] arr = Encoding.ASCII.GetBytes(sendData);
                 udp.SendTo(arr, endPoint);
             }
         }
     }
     IEnumerator ReceivePacket()
     {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[16384];
         while (true)
         {
             yield return null;
             if (udp.Available != 0)
             {
+                Array.Clear(buffer, 0, buffer.Length);
                 int receiveBuf = udp.ReceiveFrom(buffer, ref dummyEndpoint);
-                string data = Encoding.Default.GetString(buffer);
-                receiveData = ConvertData.ConvertJsonStringToTransformGO(data);
+                receiveData = Encoding.Default.GetString(buffer);
+                // Debug.Log(receiveData);
             }
         }
     }

@@ -13,22 +13,22 @@ public class BallClone2 : MonoBehaviour
     Socket udp;
     NetworkConvertData ConvertData;
     TransformGO receiveData;
-    public OtherClient client;
+    // public OtherClient client;
     void Start()
     {
         udp = NetworkManager.NWManager.UDP();
         ConvertData = new NetworkConvertData();
-        client = new OtherClient("", false, Vector3.zero, Quaternion.identity, Vector3.zero);
+        // client = new OtherClient("", false, Vector3.zero, Quaternion.identity, Vector3.zero);
     }
 
     // Update is called once per frame
     void Update()
     {
         // ReceiveData();
-        SetData(NetworkManager.NWManager.receiveData);
-        transform.position = client.position;
-        transform.rotation = client.rotation;
-        transform.localScale = client.scale;
+        // SetData(NetworkManager.NWManager.receiveData);
+        // transform.position = client.position;
+        // transform.rotation = client.rotation;
+        // transform.localScale = client.scale;
     }
     void ReceiveData()
     {
@@ -40,7 +40,7 @@ public class BallClone2 : MonoBehaviour
 
             string data = Encoding.Default.GetString(buffer);
             receiveData = ConvertData.ConvertJsonStringToTransformGO(data);
-            SetData(receiveData);
+            // SetData(receiveData);
             if (!receiveData.state)
             {
                 Debug.Log(receiveData.clientID);
@@ -52,13 +52,13 @@ public class BallClone2 : MonoBehaviour
         }
     }
 
-    public void SetData(TransformGO trans)
-    {
-        if (trans == null) return;
-        client.clientID = trans.clientID;
-        client.state = trans.state;
-        client.lpos = trans.position;
-        client.lrot = trans.rotation;
-        client.lscale = trans.scale;
-    }
+    // public void SetData(TransformGO trans)
+    // {
+    //     if (trans == null) return;
+    //     client.clientID = trans.clientID;
+    //     client.state = trans.state;
+    //     client.lpos = trans.position;
+    //     client.lrot = trans.rotation;
+    //     client.lscale = trans.scale;
+    // }
 }

@@ -36,7 +36,7 @@ public class NetworkInputSync : MonoBehaviour
                 }
                 Move(m_horizontal, m_vertical, j);
             }
-            client.SendPacket(new TransformGO(transform, NetworkManager.NWManager.id));
+            client.SendPacket(new ClientTransform(transform));
         }
     }
 
@@ -52,6 +52,5 @@ public class NetworkInputSync : MonoBehaviour
         {
             m_rigidbody.velocity += Vector3.up * 20f;
         }
-        client.nextTransform = transform;
     }
 }

@@ -35,8 +35,8 @@ public class NetworkInputSync : MonoBehaviour
                     j = true;
                 }
                 Move(m_horizontal, m_vertical, j);
-                client.SendPacket(new TransformGO(transform, NetworkManager.NWManager.id));
             }
+            client.SendPacket(new TransformGO(transform, NetworkManager.NWManager.id));
         }
     }
 

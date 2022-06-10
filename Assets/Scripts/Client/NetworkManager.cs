@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
@@ -14,12 +15,18 @@ public class NetworkManager : MonoBehaviour
     int port = 8080;
     #region "Public Members"
     public string id;
+    public NetworkRoom networkRoom;
+    public TransformGO receiveData;
+    public TransformGO packetData;
     #endregion
 
     #region "Private Members"
     Socket udp;
     IPEndPoint endPoint;
     EndPoint dummyEndpoint;
+    Coroutine coroutineReceivePacket;
+    Coroutine coroutineSendPacket;
+    NetworkConvertData ConvertData;
     #endregion
     private void Awake()
     {
@@ -28,7 +35,15 @@ public class NetworkManager : MonoBehaviour
         else
             NWManager = this;
         DontDestroyOnLoad(this);
+        receiveData = null;
+        packetData = null;
+        ConvertData = new NetworkConvertData();
         NetworkConnect();
+        networkRoom = new NetworkRoom();
+        // threadSendPacket = new Thread(SendPacket);
+        // threadSendPacket.Start();
+        coroutineSendPacket = StartCoroutine(SendPacket());
+        coroutineReceivePacket = StartCoroutine(ReceivePacket());
     }
     void Start()
     {
@@ -39,8 +54,8 @@ public class NetworkManager : MonoBehaviour
     }
     public void NetworkConnect()
     {
-        serverIP = PlayerPrefs.GetString("IP", "127.0.0.1");
-        port = PlayerPrefs.GetInt("Port", 1108);
+        serverIP = PlayerPrefs.GetString("IP", "127.0.0.1"); // 35.87.152.15
+        port = PlayerPrefs.GetInt("Port", 1108); // 2222
         if (serverIP == "")
             Debug.LogError("Server IP Address not set");
         if (port == -1)
@@ -85,5 +100,35 @@ public class NetworkManager : MonoBehaviour
         }
 
         return Sb.ToString();
+    }
+    IEnumerator SendPacket()
+    {
+        while (true)
+        {
+            yield return null;
+            if (packetData == null)
+            {
+                continue;
+            }
+            else
+            {
+                byte[] arr = Encoding.ASCII.GetBytes(ConvertData.ConvertTransformGOToJsonString(packetData));
+                udp.SendTo(arr, endPoint);
+            }
+        }
+    }
+    IEnumerator ReceivePacket()
+    {
+        byte[] buffer = new byte[1024];
+        while (true)
+        {
+            yield return null;
+            if (udp.Available != 0)
+            {
+                int receiveBuf = udp.ReceiveFrom(buffer, ref dummyEndpoint);
+                string data = Encoding.Default.GetString(buffer);
+                receiveData = ConvertData.ConvertJsonStringToTransformGO(data);
+            }
+        }
     }
 }

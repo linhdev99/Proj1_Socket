@@ -50,10 +50,11 @@ public class NetworkClient : MonoBehaviour
     void SendInitialReqToServer()
     {
         udp = NetworkManager.NWManager.UDP();
-        string p = ConvertData.ConvertTransformGOToJsonString(new TransformGO(transform, NetworkManager.NWManager.id, true));
-        Debug.Log(p);
-        byte[] packet = Encoding.ASCII.GetBytes(p);
-        udp.SendTo(packet, NetworkManager.NWManager.IP_EndPoint());
+        NetworkManager.NWManager.packetData = new TransformGO(transform, NetworkManager.NWManager.id, true);
+        // string p = ConvertData.ConvertTransformGOToJsonString(new TransformGO(transform, NetworkManager.NWManager.id, true));
+        // // Debug.Log(p);
+        // byte[] packet = Encoding.ASCII.GetBytes(p);
+        // udp.SendTo(packet, NetworkManager.NWManager.IP_EndPoint());
     }
 
     public void SendPacket(TransformGO data)
@@ -65,9 +66,10 @@ public class NetworkClient : MonoBehaviour
             return;
         }
         UpdateStateHistory();
+        NetworkManager.NWManager.packetData = data;
         // byte[] arr = Encoding.ASCII.GetBytes(packetNumber + " " + id + " " + str);
-        byte[] arr = Encoding.ASCII.GetBytes(ConvertData.ConvertTransformGOToJsonString(data));
-        udp.SendTo(arr, NetworkManager.NWManager.IP_EndPoint());
+        // byte[] arr = Encoding.ASCII.GetBytes(ConvertData.ConvertTransformGOToJsonString(data));
+        // udp.SendTo(arr, NetworkManager.NWManager.IP_EndPoint());
     }
 
     public void UpdateStateHistory()

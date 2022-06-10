@@ -24,7 +24,8 @@ public class BallClone2 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ReceiveData();
+        // ReceiveData();
+        SetData(NetworkManager.NWManager.receiveData);
         transform.position = client.position;
         transform.rotation = client.rotation;
         transform.localScale = client.scale;
@@ -53,6 +54,7 @@ public class BallClone2 : MonoBehaviour
 
     public void SetData(TransformGO trans)
     {
+        if (trans == null) return;
         client.clientID = trans.clientID;
         client.state = trans.state;
         client.lpos = trans.position;

@@ -2,28 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-
-[RequireComponent(typeof(NetworkClient))]
-[RequireComponent(typeof(NetworkClientDisplay))]
-public class NetworkInputSync : MonoBehaviour
+public class ClientController : MonoBehaviour
 {
-    [Tooltip("The distance to be moved in each move input")]
     [SerializeField]
     float m_speed = 10f;
+    #region "Public Members"
+    #endregion
+
+    #region "Private Members"
     float m_horizontal, m_vertical;
     Rigidbody m_rigidbody;
     NetworkClient client;
-    NetworkClientDisplay clientMover;
+    bool isMaster = false; // true: có thể điều kiển, false: không thể điều khiển
+    #endregion
 
     void Start()
     {
-        client = GetComponent<NetworkClient>();
-        clientMover = GetComponent<NetworkClientDisplay>();
+        client = GameObject.Find("NetworkClient").GetComponent<NetworkClient>();
         m_rigidbody = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
+        if (!isMaster) return;
         if (NetworkManager.NWManager.id != "")
         {
             GetMoveInput();
@@ -38,10 +39,6 @@ public class NetworkInputSync : MonoBehaviour
             }
             client.SendPacket(new ClientTransform(transform));
         }
-        // if (Input.GetKeyDown(KeyCode.A))
-        // {
-        //     client.SendPacket(new ClientTransform(transform));
-        // }
     }
 
     void GetMoveInput()
@@ -56,5 +53,9 @@ public class NetworkInputSync : MonoBehaviour
         {
             m_rigidbody.velocity += Vector3.up * 20f;
         }
+    }
+    public void SetMaster(bool value)
+    {
+        isMaster = value;
     }
 }

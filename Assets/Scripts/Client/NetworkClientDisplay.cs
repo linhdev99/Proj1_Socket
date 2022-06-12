@@ -4,36 +4,44 @@ using UnityEngine;
 
 public class NetworkClientDisplay : MonoBehaviour
 {
+    #region "Public Members"
     public GameObject go_Ball;
     public Dictionary<string, NetworkClientData> clients;
+    public Transform spawnUser;
+    #endregion
+
+    #region "Private Members"
     NetworkConvertData ConvertData;
     Dictionary<string, GameObject> clientsInScene;
+    #endregion
     private void Awake()
     {
-        // client = new OtherClient("", false, Vector3.zero, Quaternion.identity, Vector3.zero);
-        // ball_clone = Instantiate(go_Ball, go_Ball.transform.position, go_Ball.transform.rotation);
         ConvertData = new NetworkConvertData();
         clients = new Dictionary<string, NetworkClientData>();
         clientsInScene = new Dictionary<string, GameObject>();
     }
-    void Update()
+    private void Start()
     {
-        // transform.position = client.position;
-        // ball_clone.transform.position = client.position;
-        // ball_clone.transform.rotation = client.rotation;
-        // ball_clone.transform.localScale = client.scale;
-        // Debug.Log(client.scale);
-        GetData();
+        CreateMasterUser();
     }
-    public void SetData(TransformGO trans)
+    private void Update()
     {
-        // client.clientID = trans.clientID;
-        // client.state = trans.state;
-        // client.lpos = trans.position;
-        // client.lrot = trans.rotation;
-        // client.lscale = trans.scale;
+        if (NetworkManager.NWManager.canReceiveData)
+        {
+            GetData();
+        }
     }
-    public void GetData()
+    private void CreateMasterUser()
+    {
+        if (NetworkManager.NWManager.id != "" || NetworkManager.NWManager.id != null)
+        {
+            GameObject ball = Instantiate(go_Ball, spawnUser.position, spawnUser.rotation);
+            ball.GetComponent<ClientController>().SetMaster(true);
+            ball.name = NetworkManager.NWManager.id;
+            clientsInScene.Add(NetworkManager.NWManager.id, ball);
+        }
+    }
+    private void GetData()
     {
         clients = ConvertData.ConvertJsonStringToNetworkClientData(NetworkManager.NWManager.receiveData);
         if (clients == null)
@@ -46,10 +54,12 @@ public class NetworkClientDisplay : MonoBehaviour
             {
                 continue;
             }
-            if (!clientsInScene.ContainsKey(key))
+            else if (!clientsInScene.ContainsKey(key))
             {
                 GameObject ball = Instantiate(go_Ball, clients[key].clientTransform.GetPosition(), clients[key].clientTransform.GetRotation());
                 ball.transform.localScale = clients[key].clientTransform.GetScale();
+                ball.name = key;
+                ball.GetComponent<ClientController>().SetMaster(false);
                 clientsInScene.Add(key, ball);
             }
             else
@@ -58,6 +68,18 @@ public class NetworkClientDisplay : MonoBehaviour
                 clientsInScene[key].transform.rotation = clients[key].clientTransform.GetRotation();
                 clientsInScene[key].transform.localScale = clients[key].clientTransform.GetScale();
             }
+        }
+    }
+    public void ClearClient()
+    {
+        clients.Clear();
+        if (clientsInScene.Count > 0)
+        {
+            foreach (string key in clientsInScene.Keys)
+            {
+                Destroy(clientsInScene[key].gameObject);
+            }
+            clientsInScene.Clear();
         }
     }
 }

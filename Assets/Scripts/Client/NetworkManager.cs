@@ -17,6 +17,7 @@ public class NetworkManager : MonoBehaviour
     public string id;
     public NetworkRoom networkRoom;
     public string receiveData;
+    public bool canReceiveData;
     public string sendData;
     #endregion
 
@@ -38,10 +39,8 @@ public class NetworkManager : MonoBehaviour
         receiveData = "";
         sendData = "";
         ConvertData = new NetworkConvertData();
-        NetworkConnect();
         networkRoom = new NetworkRoom();
-        coroutineSendPacket = StartCoroutine(SendPacket());
-        coroutineReceivePacket = StartCoroutine(ReceivePacket());
+        NetworkConnect();
     }
     void Start()
     {
@@ -63,6 +62,25 @@ public class NetworkManager : MonoBehaviour
         udp = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         udp.Blocking = false;
         id = CreateID();
+        coroutineSendPacket = StartCoroutine(SendPacket());
+        coroutineReceivePacket = StartCoroutine(ReceivePacket());
+    }
+    public void NetworkDisconnect()
+    {
+        if (udp.Connected)
+        {
+            StopCoroutine(coroutineSendPacket);
+            StopCoroutine(coroutineReceivePacket);
+            receiveData = "";
+            canReceiveData = false;
+            NetworkClientData data = new NetworkClientData(NetworkManager.NWManager.id, false);
+            string json = ConvertData.ConvertNetworkClientDataToJsonString(data);
+            byte[] arr = Encoding.ASCII.GetBytes(json);
+            udp.SendTo(arr, endPoint);
+            udp.Close();
+            GameObject.Find("NetworkClient").GetComponent<NetworkClientDisplay>().ClearClient();
+            // Debug.Log(json);
+        }
     }
     public void ChangeIPAndPort(string ip, int port)
     {
@@ -96,7 +114,6 @@ public class NetworkManager : MonoBehaviour
             foreach (Byte b in result)
                 Sb.Append(b.ToString("x2"));
         }
-
         return Sb.ToString();
     }
     IEnumerator SendPacket()
@@ -112,12 +129,14 @@ public class NetworkManager : MonoBehaviour
             {
                 byte[] arr = Encoding.ASCII.GetBytes(sendData);
                 udp.SendTo(arr, endPoint);
+                // Debug.Log(sendData);
             }
         }
     }
     IEnumerator ReceivePacket()
     {
         byte[] buffer = new byte[16384];
+        canReceiveData = true;
         while (true)
         {
             yield return null;
@@ -129,5 +148,9 @@ public class NetworkManager : MonoBehaviour
                 // Debug.Log(receiveData);
             }
         }
+    }
+    void OnApplicationQuit()
+    {
+        NetworkDisconnect();
     }
 }

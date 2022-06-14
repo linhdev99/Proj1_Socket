@@ -49,7 +49,8 @@ namespace BKSpeed
         }
         void Start()
         {
-            NetworkConnect();
+            // NetworkConnect();
+            TCPConnect();
         }
         void Update()
         {
@@ -78,7 +79,7 @@ namespace BKSpeed
         }
         public void TCPConnect()
         {
-            serverIP = "35.87.152.15";
+            serverIP = BaseConstant.IP_ADDRESS;
             port = 7777;
             IPHostEntry host = Dns.GetHostEntry(serverIP);
             IPAddress iPAddress = host.AddressList[0];
@@ -115,9 +116,10 @@ namespace BKSpeed
         void SendTCP()
         {
             byte[] sendData = new byte[1024];
-            ChatMessage testTxt = new ChatMessage("1", "9999", "hello world");
-            Debug.Log(ConvertData.Convert_ChatMessage_To_JsonString(testTxt));
-            sendData = Encoding.ASCII.GetBytes(ConvertData.Convert_ChatMessage_To_JsonString(testTxt) + "<EOF>");
+            Room room = new Room(123, 123456, "asdad");
+            MessageSocket testTxt = new MessageSocket("CREATE_ROOM", ConvertData.Convert_Room_To_JsonString(room));
+            Debug.Log(ConvertData.Convert_MessageSocket_To_JsonString(testTxt));
+            sendData = Encoding.ASCII.GetBytes(ConvertData.Convert_MessageSocket_To_JsonString(testTxt) + "<EOF>");
             // Debug.Log(sendData);
             // sendData = Encoding.ASCII.GetBytes("CREATE_ROOM|123456"+"<EOF>");
             int bytesSend = tcp.Send(sendData);

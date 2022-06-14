@@ -13,6 +13,16 @@ namespace BKSpeed
             string jsonString = JObject.FromObject(data).ToString();
             return jsonString;
         }
+        public string Convert_MessageSocket_To_JsonString(MessageSocket data)
+        {
+            string jsonString = JObject.FromObject(data).ToString();
+            return jsonString;
+        }
+        public string Convert_Room_To_JsonString(Room data)
+        {
+            string jsonString = JObject.FromObject(data).ToString();
+            return jsonString;
+        }
         public string Convert_UserDataRealtime_To_JsonString(UserDataRealtime data)
         {
             string jsonString = JObject.FromObject(data).ToString();

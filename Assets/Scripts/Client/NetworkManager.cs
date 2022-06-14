@@ -106,18 +106,21 @@ namespace BKSpeed
             byte[] receiveDataTcp = new byte[1024];
             while (true)
             {
-                tcp.Receive(receiveDataTcp);
-                string text = Encoding.ASCII.GetString(receiveDataTcp, 0, receiveDataTcp.Length);
-                Debug.Log("receive  " + text);
-
-                Array.Clear(receiveDataTcp, 0, receiveDataTcp.Length);
+                if (tcp.Connected)
+                {
+                    tcp.Receive(receiveDataTcp);
+                    string text = Encoding.ASCII.GetString(receiveDataTcp, 0, receiveDataTcp.Length);
+                    Debug.Log("receive  " + text);
+                    MessageSocket abc = ConvertData.Convert_JsonString_To_MessageSocket(text);
+                    Array.Clear(receiveDataTcp, 0, receiveDataTcp.Length);
+                }
             }
         }
         void SendTCP()
         {
             byte[] sendData = new byte[1024];
             Room room = new Room(123, 123456, "asdad");
-            MessageSocket testTxt = new MessageSocket("CREATE_ROOM", ConvertData.Convert_Room_To_JsonString(room));
+            MessageSocket testTxt = new MessageSocket(BaseConstant.SOCKET_EVENT_CREATE_ROOM, ConvertData.Convert_Room_To_JsonString(room));
             Debug.Log(ConvertData.Convert_MessageSocket_To_JsonString(testTxt));
             sendData = Encoding.ASCII.GetBytes(ConvertData.Convert_MessageSocket_To_JsonString(testTxt) + "<EOF>");
             // Debug.Log(sendData);
@@ -216,7 +219,7 @@ namespace BKSpeed
         void OnApplicationQuit()
         {
             if (isConnected) NetworkDisconnect();
-            // if (tcp != null) if (tcp.Connected) tcp.Close();
+            if (tcp != null) if (tcp.Connected) tcp.Close();
         }
     }
 }

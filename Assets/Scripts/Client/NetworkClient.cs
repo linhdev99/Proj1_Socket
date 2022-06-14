@@ -9,42 +9,44 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
-
-[RequireComponent(typeof(NetworkClientDisplay))]
-public class NetworkClient : MonoBehaviour
+namespace BKSpeed
 {
-    #region "Public Members"
-    #endregion
-
-    #region "Private Members"
-    NetworkConvertData ConvertData;
-    ClientTransform tempClientTransform;
-    #endregion
-
-    void Awake()
+    [RequireComponent(typeof(NetworkClientDisplay))]
+    public class NetworkClient : MonoBehaviour
     {
-        ConvertData = new NetworkConvertData();
-        tempClientTransform = new ClientTransform();
-    }
-    private void Start()
-    {
+        #region "Public Members"
+        #endregion
 
-    }
-    void Update()
-    {
+        #region "Private Members"
+        NetworkConvertData ConvertData;
+        ClientTransform tempClientTransform;
+        #endregion
 
-    }
+        void Awake()
+        {
+            ConvertData = new NetworkConvertData();
+            tempClientTransform = new ClientTransform();
+        }
+        private void Start()
+        {
 
-    public void SendPacket(ClientTransform clientTransform)
-    {
-        tempClientTransform = clientTransform;
-        NetworkClientData data = new NetworkClientData(NetworkManager.NWManager.id, true, clientTransform);
-        string json = ConvertData.ConvertNetworkClientDataToJsonString(data);
-        NetworkManager.NWManager.sendData = json;
-    }
+        }
+        void Update()
+        {
 
-    void AddOtherClient(string parsedID, Transform trans)
-    {
+        }
 
+        public void SendPacket(ClientTransform clientTransform)
+        {
+            tempClientTransform = clientTransform;
+            UserDataRealtime data = new UserDataRealtime(NetworkManager.NWManager.id, true, clientTransform);
+            NetworkManager.NWManager.userSendData = data;
+            // string json = ConvertData.ConvertNetworkClientDataToJsonString(data);
+        }
+
+        void AddOtherClient(string parsedID, Transform trans)
+        {
+
+        }
     }
 }

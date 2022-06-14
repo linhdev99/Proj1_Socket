@@ -2,59 +2,61 @@ using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
-
-[RequireComponent(typeof(NetworkClient))]
-[RequireComponent(typeof(NetworkClientDisplay))]
-public class NetworkInputSync : MonoBehaviour
+namespace BKSpeed
 {
-    [Tooltip("The distance to be moved in each move input")]
-    [SerializeField]
-    float m_speed = 10f;
-    float m_horizontal, m_vertical;
-    Rigidbody m_rigidbody;
-    NetworkClient client;
-    NetworkClientDisplay clientMover;
-
-    void Start()
+    [RequireComponent(typeof(NetworkClient))]
+    [RequireComponent(typeof(NetworkClientDisplay))]
+    public class NetworkInputSync : MonoBehaviour
     {
-        client = GetComponent<NetworkClient>();
-        clientMover = GetComponent<NetworkClientDisplay>();
-        m_rigidbody = GetComponent<Rigidbody>();
-    }
+        [Tooltip("The distance to be moved in each move input")]
+        [SerializeField]
+        float m_speed = 10f;
+        float m_horizontal, m_vertical;
+        Rigidbody m_rigidbody;
+        NetworkClient client;
+        NetworkClientDisplay clientMover;
 
-    void Update()
-    {
-        if (NetworkManager.NWManager.id != "")
+        void Start()
         {
-            GetMoveInput();
-            if (m_horizontal != 0 || m_vertical != 0)
-            {
-                bool j = false;
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    j = true;
-                }
-                Move(m_horizontal, m_vertical, j);
-            }
-            client.SendPacket(new ClientTransform(transform));
+            client = GetComponent<NetworkClient>();
+            clientMover = GetComponent<NetworkClientDisplay>();
+            m_rigidbody = GetComponent<Rigidbody>();
         }
-        // if (Input.GetKeyDown(KeyCode.A))
-        // {
-        //     client.SendPacket(new ClientTransform(transform));
-        // }
-    }
 
-    void GetMoveInput()
-    {
-        m_horizontal = Input.GetAxis("Horizontal");
-        m_vertical = Input.GetAxis("Vertical");
-    }
-    void Move(float horizontal, float vertical, bool jump)
-    {
-        m_rigidbody.velocity = new Vector3(horizontal * m_speed, m_rigidbody.velocity.y, vertical * m_speed);
-        if (jump)
+        void Update()
         {
-            m_rigidbody.velocity += Vector3.up * 20f;
+            if (NetworkManager.NWManager.id != "")
+            {
+                GetMoveInput();
+                if (m_horizontal != 0 || m_vertical != 0)
+                {
+                    bool j = false;
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        j = true;
+                    }
+                    Move(m_horizontal, m_vertical, j);
+                }
+                client.SendPacket(new ClientTransform(transform));
+            }
+            // if (Input.GetKeyDown(KeyCode.A))
+            // {
+            //     client.SendPacket(new ClientTransform(transform));
+            // }
+        }
+
+        void GetMoveInput()
+        {
+            m_horizontal = Input.GetAxis("Horizontal");
+            m_vertical = Input.GetAxis("Vertical");
+        }
+        void Move(float horizontal, float vertical, bool jump)
+        {
+            m_rigidbody.velocity = new Vector3(horizontal * m_speed, m_rigidbody.velocity.y, vertical * m_speed);
+            if (jump)
+            {
+                m_rigidbody.velocity += Vector3.up * 20f;
+            }
         }
     }
 }

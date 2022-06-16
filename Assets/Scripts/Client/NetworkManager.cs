@@ -74,9 +74,6 @@ namespace BKSpeed
             MessageSocket messageSocket = new MessageSocket(BaseConstant.SOCKET_EVENT_CREATE_ROOM, ConvertData.Convert_Room_To_JsonString(room));
             networkTCP.SocketTCPSendPacket(messageSocket);
         }
-        /// <summary>
-        /// Callback sent to all game objects before the application is quit.
-        /// </summary>
         private void OnApplicationQuit()
         {
             networkTCP.Disconnect();

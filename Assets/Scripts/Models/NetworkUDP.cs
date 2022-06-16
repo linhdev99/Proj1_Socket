@@ -66,8 +66,8 @@ namespace BKSpeed
                 {
                     receiveBuf = udp.ReceiveFrom(buffer, ref dummyEndpoint);
                     receiveJsonData = Encoding.Default.GetString(buffer);
-                    receiveUserDataRealtime = ConvertData.Convert_JsonString_To_UserDataRealtime(receiveJsonData);
                     actionTest(receiveJsonData);
+                    receiveUserDataRealtime = ConvertData.Convert_JsonString_To_UserDataRealtime(receiveJsonData);
                     Array.Clear(buffer, 0, buffer.Length);
                 }
             }

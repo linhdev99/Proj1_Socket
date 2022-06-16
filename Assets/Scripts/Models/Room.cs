@@ -19,19 +19,19 @@ namespace BKSpeed
         [JsonProperty]
         private List<ChatMessage> chatting;
         [JsonProperty]
-        private Socket roomSocket;
-        [JsonProperty]
         private int portData;
         [JsonProperty]
         private int portRoom;
-
-        public Room(int id, int password, string idMaster)
-        {
-            this.id = id;
-            this.password = password;
-            this.idMaster = idMaster;
-        }
-        public Room(int id, int password, bool isWaiting, string idMaster, Dictionary<string, UserDataRealtime> userDataMap, List<ChatMessage> chatting, Socket roomSocket, int portData, int portRoom)
+        public Room(
+            int id,
+            int password,
+            bool isWaiting,
+            string idMaster,
+            Dictionary<string, UserDataRealtime> userDataMap,
+            List<ChatMessage> chatting,
+            int portData,
+            int portRoom
+        )
         {
             this.id = id;
             this.password = password;
@@ -39,9 +39,18 @@ namespace BKSpeed
             this.idMaster = idMaster;
             this.userDataMap = userDataMap;
             this.chatting = chatting;
-            this.roomSocket = roomSocket;
             this.portData = portData;
             this.portRoom = portRoom;
+        }
+
+        public Room(int password, string idMaster)
+        {
+            this.password = password;
+            this.idMaster = idMaster;
+        }
+
+        public Room()
+        {
         }
 
         public int getId()
@@ -83,6 +92,15 @@ namespace BKSpeed
         {
             this.idMaster = idMaster;
         }
+        public Dictionary<string, UserDataRealtime> getUserDataMap()
+        {
+            return this.userDataMap;
+        }
+
+        public void setUserDataMap(Dictionary<string, UserDataRealtime> userDataMap)
+        {
+            this.userDataMap = userDataMap;
+        }
 
         public List<ChatMessage> getChatting()
         {
@@ -92,15 +110,6 @@ namespace BKSpeed
         public void setChatting(List<ChatMessage> chatting)
         {
             this.chatting = chatting;
-        }
-        public Socket getRoomSocket()
-        {
-            return this.roomSocket;
-        }
-
-        public void setRoomSocket(Socket roomSocket)
-        {
-            this.roomSocket = roomSocket;
         }
 
         public int getPortData()

@@ -24,16 +24,9 @@ namespace BKSpeed
             {
                 return null;
             }
-            Debug.Log(rawString);
             JObject json = JObject.Parse(rawString);
             MessageSocket result = json.ToObject<MessageSocket>();
-            Debug.Log(result.getAction());
             Dictionary<string, string> test = JObject.Parse(result.getValue()).ToObject<Dictionary<string, string>>();
-            foreach (string key in test.Keys)
-            {
-                Debug.Log(key);
-                Debug.Log(test[key]);
-            }
             return result;
         }
         public string Convert_Room_To_JsonString(Room data)
@@ -60,6 +53,17 @@ namespace BKSpeed
             {
                 result.Add(key, data[key].ToObject<UserDataRealtime>());
             }
+            return result;
+        }
+        public Dictionary<string, int> Convert_JsonString_To_DictInt(string rawString)
+        {
+            if (rawString == "" || rawString == null)
+            {
+                return null;
+            }
+            Dictionary<string, int> result = new Dictionary<string, int>();
+            JObject json = JObject.Parse(rawString);
+            result = json.ToObject<Dictionary<string, int>>();
             return result;
         }
     }

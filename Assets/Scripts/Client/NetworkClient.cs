@@ -38,9 +38,9 @@ namespace BKSpeed
 
         public void SendPacket(ClientTransform clientTransform)
         {
-            tempClientTransform = clientTransform;
-            UserDataRealtime data = new UserDataRealtime(NetworkManager.NWManager.id, true, clientTransform);
-            NetworkManager.NWManager.userSendData = data;
+            // tempClientTransform = clientTransform;
+            // UserDataRealtime data = new UserDataRealtime(NetworkManager.NWManager.getId(), true, clientTransform);
+            // NetworkManager.NWManager.setUDPSendUserDataRealtime(data);
             // string json = ConvertData.ConvertNetworkClientDataToJsonString(data);
         }
 

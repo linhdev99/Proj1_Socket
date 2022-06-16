@@ -26,10 +26,10 @@ namespace BKSpeed
         }
         private void Update()
         {
-            if (NetworkManager.NWManager.isConnected)
-            {
-                GetData();
-            }
+            // if (NetworkManager.NWManager.isConnectedToServer())
+            // {
+            //     GetData();
+            // }
         }
         private void CreateMasterUser()
         {
@@ -37,46 +37,46 @@ namespace BKSpeed
             {
                 clientsInScene = new Dictionary<string, GameObject>();
             }
-            if (NetworkManager.NWManager.id != "" || NetworkManager.NWManager.id != null)
-            {
-                GameObject ball = Instantiate(go_Ball, spawnUser.position, spawnUser.rotation);
-                ball.GetComponent<ClientController>().SetMaster(true);
-                ball.name = NetworkManager.NWManager.id;
-                clientsInScene.Add(NetworkManager.NWManager.id, ball);
-            }
+            // if (NetworkManager.NWManager.getId() != "" || NetworkManager.NWManager.getId() != null)
+            // {
+            //     GameObject ball = Instantiate(go_Ball, spawnUser.position, spawnUser.rotation);
+            //     ball.GetComponent<ClientController>().SetMaster(true);
+            //     ball.name = NetworkManager.NWManager.getId();
+            //     clientsInScene.Add(NetworkManager.NWManager.getId(), ball);
+            // }
         }
         private void GetData()
         {
             // clients = ConvertData.ConvertJsonStringToNetworkClientData(NetworkManager.NWManager.receiveData);
-            clients = NetworkManager.NWManager.userReceiveData;
+            // clients = NetworkManager.NWManager.getUDPReceiveUserDataRealtime();
             if (clients == null)
             {
                 return;
             }
             foreach (string key in clients.Keys)
             {
-                if (key.Equals(NetworkManager.NWManager.id))
-                {
-                    continue;
-                }
-                else if (!clientsInScene.ContainsKey(key))
-                {
-                    GameObject ball = Instantiate(
-                                                    go_Ball,
-                                                    clients[key].getClientTransform().GetPosition(),
-                                                    clients[key].getClientTransform().GetRotation()
-                                                );
-                    ball.transform.localScale = clients[key].getClientTransform().GetScale();
-                    ball.name = key;
-                    ball.GetComponent<ClientController>().SetMaster(false);
-                    clientsInScene.Add(key, ball);
-                }
-                else
-                {
-                    clientsInScene[key].transform.position = clients[key].getClientTransform().GetPosition();
-                    clientsInScene[key].transform.rotation = clients[key].getClientTransform().GetRotation();
-                    clientsInScene[key].transform.localScale = clients[key].getClientTransform().GetScale();
-                }
+                // if (key.Equals(NetworkManager.NWManager.getId()))
+                // {
+                //     continue;
+                // }
+                // else if (!clientsInScene.ContainsKey(key))
+                // {
+                //     GameObject ball = Instantiate(
+                //                                     go_Ball,
+                //                                     clients[key].getClientTransform().GetPosition(),
+                //                                     clients[key].getClientTransform().GetRotation()
+                //                                 );
+                //     ball.transform.localScale = clients[key].getClientTransform().GetScale();
+                //     ball.name = key;
+                //     ball.GetComponent<ClientController>().SetMaster(false);
+                //     clientsInScene.Add(key, ball);
+                // }
+                // else
+                // {
+                //     clientsInScene[key].transform.position = clients[key].getClientTransform().GetPosition();
+                //     clientsInScene[key].transform.rotation = clients[key].getClientTransform().GetRotation();
+                //     clientsInScene[key].transform.localScale = clients[key].getClientTransform().GetScale();
+                // }
             }
         }
         public void ClearClient()
@@ -93,10 +93,10 @@ namespace BKSpeed
         }
         public void StartGame()
         {
-            if (NetworkManager.NWManager.isConnected)
-            {
-                CreateMasterUser();
-            }
+            // if (NetworkManager.NWManager.isConnectedToServer())
+            // {
+            //     CreateMasterUser();
+            // }
         }
     }
 }

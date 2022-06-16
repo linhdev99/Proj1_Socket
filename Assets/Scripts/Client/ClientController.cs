@@ -27,20 +27,17 @@ namespace BKSpeed
         void Update()
         {
             if (!isMaster) return;
-            if (NetworkManager.NWManager.id != "")
+            GetMoveInput();
+            if (m_horizontal != 0 || m_vertical != 0)
             {
-                GetMoveInput();
-                if (m_horizontal != 0 || m_vertical != 0)
+                bool j = false;
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    bool j = false;
-                    if (Input.GetKeyDown(KeyCode.Space))
-                    {
-                        j = true;
-                    }
-                    Move(m_horizontal, m_vertical, j);
+                    j = true;
                 }
-                client.SendPacket(new ClientTransform(transform));
+                Move(m_horizontal, m_vertical, j);
             }
+            client.SendPacket(new ClientTransform(transform));
         }
 
         void GetMoveInput()

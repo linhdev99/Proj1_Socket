@@ -41,8 +41,8 @@ namespace BKSpeed
             udp.ReceiveTimeout = BaseConstant.SOCKET_UDP_RECEIVE_TIMEOUT;
             udp.Blocking = false;
             receiveUserDataRealtime = new Dictionary<string, UserDataRealtime>();
-            threadReceive = new Thread(ReceivePacket);
-            threadReceive.Start();
+            // threadReceive = new Thread(ReceivePacket);
+            // threadReceive.Start();
         }
         public void Disconnect()
         {
@@ -55,17 +55,54 @@ namespace BKSpeed
                 threadReceive.Abort();
             }
         }
+        public void JoinGroup(int port)
+        {
+            try
+            {
+                Debug.Log(1);
+                IPAddress localIPAddr = IPAddress.Parse("230.0.0.0");
 
+                //IPAddress localIP = IPAddress.Any;
+                EndPoint localEP = (EndPoint)new IPEndPoint(localIPAddr, port);
+
+                Debug.Log(2);
+                udp.Bind(localEP);
+
+                Debug.Log(3);
+                MulticastOption mcastOption = new MulticastOption(localIPAddr, ip);
+
+                Debug.Log(4);
+                udp.SetSocketOption(SocketOptionLevel.IP,
+                                            SocketOptionName.AddMembership,
+                                            mcastOption);
+                                            
+                Debug.Log(5);
+            }
+
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
+        public void Receiver()
+        {
+            Debug.Log(" start receive");
+            threadReceive = new Thread(ReceivePacket);
+            threadReceive.Start();
+        }
         void ReceivePacket()
         {
             byte[] buffer = new byte[BaseConstant.MAX_BUFFER_SIZE];
             int receiveBuf = -1;
+            Debug.Log("  receive packet");
             while (true)
             {
                 if (udp.Available != 0)
                 {
+                    Debug.Log(" receive from");
                     receiveBuf = udp.ReceiveFrom(buffer, ref dummyEndpoint);
                     receiveJsonData = Encoding.Default.GetString(buffer);
+                    Debug.Log(receiveJsonData);
                     actionTest(receiveJsonData);
                     receiveUserDataRealtime = ConvertData.Convert_JsonString_To_UserDataRealtime(receiveJsonData);
                     Array.Clear(buffer, 0, buffer.Length);
